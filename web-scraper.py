@@ -9,7 +9,12 @@ from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+class coffeeShop:
+    def __init__(self, name):
+        self.name=name
+
 driver=webdriver.Chrome()
+cofeeShopArr =[]
 
 
 filename = "data"
@@ -44,21 +49,23 @@ while len(shops) < 1000:
     else:
         shopLen=0
 
-for i in shops:
-    print(i)
-
-
-
-shops[0]
-shops[0].click()
-time.sleep(2)
-source=driver.page_source
-soup=BeautifulSoup(source,'html.parser')
-name_html= soup.find('h1',{"class": "DUwDvf"})
-
-
-print(name_html)
+for i in range(len(shops)):
+    scroll_origin=ScrollOrigin.from_element(shops[i])
+    action.scroll_from_origin(scroll_origin, 0, 100).perform()
+    action.move_to_element(shops[i]).perform()
+    shops[i].click()
+    time.sleep(2)
+    source=driver.page_source
+    try:
+        soup=BeautifulSoup(source,'html.parser')
+        name_html=soup.find('h1',{"class":"DUwDvf"}).text
+        print(name_html)
+        cofeeShopArr.append(coffeeShop(name_html))
+    except:
+        print("error")
 driver.quit()
+
+print(len(cofeeShopArr))
 
 # url='https://en.wikipedia.org/wiki/List_of_largest_companies_by_revenue'
 # page=requests.get(url)
