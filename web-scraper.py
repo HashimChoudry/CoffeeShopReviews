@@ -14,6 +14,7 @@ driver=webdriver.Chrome()
 
 filename = "data"
 url = "https://www.google.co.uk/maps/search/coffee+shops+in+manchester/@53.4785683,-2.2489418,15z/data=!3m1!4b1?entry=ttu"
+count = 0
 
 driver.get(url)
 
@@ -28,17 +29,35 @@ except:
 action=ActionChains(driver)
 shops = driver.find_elements(By.CLASS_NAME,'hfpxzc')
 
+while len(shops) < 1000:
+    print(len(shops))
+    shopLen = len(shops)
+    scroll_origin = ScrollOrigin.from_element(shops[len(shops) - 1])
+    action.scroll_from_origin(scroll_origin, 0, 100).perform()
+    time.sleep(2)
+    shops = driver.find_elements(By.CLASS_NAME,'hfpxzc')
+
+    if len(shops) == shopLen:
+        shopLen +=1
+        if shopLen >20:
+            break
+    else:
+        shopLen=0
+
+for i in shops:
+    print(i)
+
+
+
 shops[0]
 shops[0].click()
 time.sleep(2)
 source=driver.page_source
 soup=BeautifulSoup(source,'html.parser')
 name_html= soup.find('h1',{"class": "DUwDvf"})
+
+
 print(name_html)
-
-
-
-input()
 driver.quit()
 
 # url='https://en.wikipedia.org/wiki/List_of_largest_companies_by_revenue'
